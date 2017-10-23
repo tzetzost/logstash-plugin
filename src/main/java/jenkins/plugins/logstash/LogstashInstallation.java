@@ -67,6 +67,8 @@ public class LogstashInstallation extends ToolInstallation {
     public String username;
     public String password;
     public String key;
+    public String proxyhost;
+    public Integer proxyport;
 
     public Descriptor() {
       super();

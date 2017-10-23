@@ -29,6 +29,8 @@ import static com.google.common.collect.Ranges.closedOpen;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -55,32 +57,33 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
   final HttpClientBuilder clientBuilder;
   final URI uri;
   final String auth;
-  final Range<Integer> successCodes = closedOpen(200,300);
+  final Range<Integer> successCodes = closedOpen(200, 300);
 
-  //primary constructor used by indexer factory
-  public ElasticSearchDao(String host, int port, String key, String username, String password) {
-    this(null, host, port, key, username, password);
+  // primary constructor used by indexer factory
+  public ElasticSearchDao(String host, int port, String key, String username, String password, String proxyHost,
+      int proxyPort) {
+    this(null, host, port, key, username, password, proxyHost, proxyPort);
   }
 
   // Factored for unit testing
-  ElasticSearchDao(HttpClientBuilder factory, String host, int port, String key, String username, String password) {
-    super(host, port, key, username, password);
+  ElasticSearchDao(HttpClientBuilder factory, String host, int port, String key, String username, String password,
+      String proxyHost, int proxyPort) {
+    super(host, port, key, username, password, proxyHost, proxyPort);
 
     if (StringUtils.isBlank(key)) {
       throw new IllegalArgumentException("elastic index name is required");
     }
 
     try {
-      uri = new URIBuilder(host)
-        .setPort(port)
-        // Normalizer will remove extra starting slashes, but missing slash will cause annoying failures
-        .setPath("/" + key)
-        .build();
+      uri = new URIBuilder(host).setPort(port)
+          // Normalizer will remove extra starting slashes, but
+          // missing slash will cause annoying failures
+          .setPath("/" + key).build();
     } catch (URISyntaxException e) {
       throw new IllegalArgumentException("Could not create uri", e);
     }
 
-    if(StringUtils.isBlank(uri.getScheme())) {
+    if (StringUtils.isBlank(uri.getScheme())) {
       throw new IllegalArgumentException("host field must specify scheme, such as 'http://'");
     }
 
@@ -94,8 +97,11 @@ public class ElasticSearchDao extends AbstractLogstashIndexerDao {
   }
 
   HttpPost getHttpPost(String data) {
+    HttpHost proxy = new HttpHost(proxyHost, proxyPort, "http");
+    RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
     HttpPost postRequest;
     postRequest = new HttpPost(uri);
+    postRequest.setConfig(config);
     StringEntity input = new StringEntity(data, ContentType.APPLICATION_JSON);
     postRequest.setEntity(input);
     if (auth != null) {

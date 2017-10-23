@@ -75,7 +75,7 @@ public final class IndexerDaoFactory {
    * @return The instance of the appropriate indexer DAO, never null
    * @throws InstantiationException
    */
-  public static synchronized LogstashIndexerDao getInstance(IndexerType type, String host, Integer port, String key, String username, String password) throws InstantiationException {
+  public static synchronized LogstashIndexerDao getInstance(IndexerType type, String host, Integer port, String key, String username, String password, String proxyHost, int proxyPort) throws InstantiationException {
     if (!INDEXER_MAP.containsKey(type)) {
       throw new InstantiationException("[logstash-plugin]: Unknown IndexerType '" + type + "'. Did you forget to configure the plugin?");
     }
@@ -83,11 +83,11 @@ public final class IndexerDaoFactory {
     // Prevent NPE
     port = (port == null ? -1 : port.intValue());
 
-    if (shouldRefreshInstance(type, host, port, key, username, password)) {
+    if (shouldRefreshInstance(type, host, port, key, username, password, proxyHost, proxyPort)) {
       try {
         Class<?> indexerClass = INDEXER_MAP.get(type);
-        Constructor<?> constructor = indexerClass.getConstructor(String.class, int.class, String.class, String.class, String.class);
-        instance = (AbstractLogstashIndexerDao) constructor.newInstance(host, port, key, username, password);
+        Constructor<?> constructor = indexerClass.getConstructor(String.class, int.class, String.class, String.class, String.class, String.class, int.class);
+        instance = (AbstractLogstashIndexerDao) constructor.newInstance(host, port, key, username, password, proxyHost, proxyPort);
       } catch (NoSuchMethodException e) {
         throw new InstantiationException(ExceptionUtils.getRootCauseMessage(e));
       } catch (InvocationTargetException e) {
@@ -100,7 +100,7 @@ public final class IndexerDaoFactory {
     return instance;
   }
 
-  private static boolean shouldRefreshInstance(IndexerType type, String host, int port, String key, String username, String password) {
+  private static boolean shouldRefreshInstance(IndexerType type, String host, int port, String key, String username, String password, String proxyHost, int proxyPort) {
     if (instance == null) {
       return true;
     }
@@ -110,7 +110,9 @@ public final class IndexerDaoFactory {
       (instance.port == port) &&
       StringUtils.equals(instance.key, key) &&
       StringUtils.equals(instance.username, username) &&
-      StringUtils.equals(instance.password, password);
+      StringUtils.equals(instance.password, password) &&
+      StringUtils.equals(instance.proxyHost, proxyHost) &&
+      (instance.proxyPort == proxyPort);
     return !matches;
   }
 }

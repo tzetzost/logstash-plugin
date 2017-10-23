@@ -44,13 +44,13 @@ public class RedisDao extends AbstractLogstashIndexerDao {
   final JedisPool pool;
 
   //primary constructor used by indexer factory
-  public RedisDao(String host, int port, String key, String username, String password) {
-    this(null, host, port, key, username, password);
+  public RedisDao(String host, int port, String key, String username, String password, String proxyHost, int proxyPort) {
+    this(null, host, port, key, username, password, proxyHost, proxyPort);
   }
 
   // Factored for unit testing
-  RedisDao(JedisPool factory, String host, int port, String key, String username, String password) {
-    super(host, port, key, username, password);
+  RedisDao(JedisPool factory, String host, int port, String key, String username, String password, String proxyHost, int proxyPort) {
+    super(host, port, key, username, password, proxyHost, proxyPort);
 
     if (StringUtils.isBlank(key)) {
       throw new IllegalArgumentException("redis key is required");

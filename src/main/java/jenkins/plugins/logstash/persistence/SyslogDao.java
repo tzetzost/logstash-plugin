@@ -10,12 +10,12 @@ import java.io.IOException;
 public class SyslogDao extends AbstractLogstashIndexerDao {
   final UdpSyslogMessageSender messageSender;
   
-  public SyslogDao(String host, int port, String key, String username, String password) {
-    this(null, host, port, key, username, password);
+  public SyslogDao(String host, int port, String key, String username, String password, String proxyHost, int proxyPort) {
+    this(null, host, port, key, username, password, proxyHost, proxyPort);
   }
 
-  public SyslogDao(UdpSyslogMessageSender udpSyslogMessageSender, String host, int port, String key, String username, String password) {
-    super(host, port, key, username, password);
+  public SyslogDao(UdpSyslogMessageSender udpSyslogMessageSender, String host, int port, String key, String username, String password, String proxyHost, int proxyPort) {
+    super(host, port, key, username, password, proxyHost, proxyPort);
     messageSender = udpSyslogMessageSender == null ? new UdpSyslogMessageSender() : udpSyslogMessageSender;
   }
 

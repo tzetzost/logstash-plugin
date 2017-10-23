@@ -43,13 +43,17 @@ abstract class AbstractLogstashIndexerDao implements LogstashIndexerDao {
   protected final String key;
   protected final String username;
   protected final String password;
+  protected final String proxyHost;
+  protected final int proxyPort;
 
-  AbstractLogstashIndexerDao(String host, int port, String key, String username, String password) {
+  AbstractLogstashIndexerDao(String host, int port, String key, String username, String password, String proxyHost, int proxyPort) {
     this.host = host;
     this.port = port;
     this.key = key;
     this.username = username;
     this.password = password;
+    this.proxyHost = proxyHost;
+    this.proxyPort = proxyPort;
 
     if (StringUtils.isBlank(host)) {
       throw new IllegalArgumentException("host name is required");

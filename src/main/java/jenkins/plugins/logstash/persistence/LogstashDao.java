@@ -1,13 +1,14 @@
 package jenkins.plugins.logstash.persistence;
 
-import com.cloudbees.syslog.Facility;
-import com.cloudbees.syslog.MessageFormat;
-import com.cloudbees.syslog.Severity;
-import com.cloudbees.syslog.sender.UdpSyslogMessageSender;
-import org.apache.http.impl.client.HttpClientBuilder;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
+
+import org.apache.http.impl.client.HttpClientBuilder;
 
 
 public class LogstashDao extends AbstractLogstashIndexerDao {
@@ -16,12 +17,12 @@ public class LogstashDao extends AbstractLogstashIndexerDao {
   final int logstashPort;
   Socket logstashClientSocket;
 
-  public LogstashDao(String logstashHostString, int logstashPortInt, String indexKey, String username, String password) {
-    this(null, logstashHostString, logstashPortInt, indexKey, username, password);
+  public LogstashDao(String logstashHostString, int logstashPortInt, String indexKey, String username, String password, String proxyHost, int proxyPort) {
+    this(null, logstashHostString, logstashPortInt, indexKey, username, password, proxyHost, proxyPort);
   }
 
-  public LogstashDao(HttpClientBuilder factory, String logstashHostString, int logstashPortInt, String indexKey, String username, String password) {
-    super(logstashHostString, logstashPortInt, indexKey, username, password);
+  public LogstashDao(HttpClientBuilder factory, String logstashHostString, int logstashPortInt, String indexKey, String username, String password, String proxyHost, int proxyPort) {
+    super(logstashHostString, logstashPortInt, indexKey, username, password, proxyHost, proxyPort);
     this.logstashHost = logstashHostString;
     this.logstashPort = logstashPortInt;
   }

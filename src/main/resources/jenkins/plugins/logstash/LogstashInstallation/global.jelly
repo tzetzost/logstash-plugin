@@ -11,6 +11,12 @@
       <f:textbox value="${descriptor.port}" default="6379"
         checkUrl="'${resURL}/descriptorByName/LogstashInstallation/checkInteger?value='+escape(this.value)" />
     </f:entry>
+    <f:entry title="${%Proxy}" field="proxyhost">
+      <f:textbox value="${descriptor.proxyhost}" />
+    </f:entry>
+    <f:entry title="${%Proxy port}" field="proxyport">
+      <f:textbox value="${descriptor.proxyport}" />
+    </f:entry>
     <f:entry title="${%Username}" field="username">
       <f:textbox value="${descriptor.username}" />
     </f:entry>

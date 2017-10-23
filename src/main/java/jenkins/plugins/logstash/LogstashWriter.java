@@ -130,7 +130,7 @@ public class LogstashWriter {
   // Method to encapsulate calls for unit-testing
   LogstashIndexerDao getDao() throws InstantiationException {
     LogstashInstallation.Descriptor descriptor = LogstashInstallation.getLogstashDescriptor();
-    return IndexerDaoFactory.getInstance(descriptor.type, descriptor.host, descriptor.port, descriptor.key, descriptor.username, descriptor.password);
+    return IndexerDaoFactory.getInstance(descriptor.type, descriptor.host, descriptor.port, descriptor.key, descriptor.username, descriptor.password, descriptor.proxyhost, descriptor.proxyport);
   }
 
   BuildData getBuildData() {
